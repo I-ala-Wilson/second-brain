@@ -1,0 +1,10 @@
+# Everything personal stays on the owner's machine
+CLAUDE.local.md
+brain.config.json
+.claude/settings.local.json
+.brain-state/
+/[0-9][0-9]-*/
+/99-archive/
+.DS_Store
+.env
+.env.*
