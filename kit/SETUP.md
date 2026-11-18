@@ -114,7 +114,7 @@ Do all of this in one pass, then verify. "Today" means today in their timezone: 
      "kit_version": "<top version in kit/CHANGELOG.md>",
      "installed": "YYYY-MM-DD",
      "chat": {
-       "theme": "hypercard", "accent": "", "pattern": "chladni", "icon": "brain",
+       "theme": "hypercard", "accent": "", "pattern": "chladni",
        "weather": null, "today": true, "calendar": false,
        "voice": false, "runner": true, "promptFile": null, "voiceVocab": ""
      }
