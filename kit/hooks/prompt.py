@@ -41,6 +41,8 @@ today = now.date()
 
 def once(name):
     """True the first time this reminder fires in this session today."""
+    if session == "nosession":
+        return True
     STATE.mkdir(exist_ok=True)
     stamp = STATE / f"{name}-{session}-{today}"
     if stamp.exists():

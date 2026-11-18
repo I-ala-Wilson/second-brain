@@ -9,7 +9,7 @@ You are installing a second brain for a new owner. Your job: ask what you need, 
 - If `brain.config.json` already exists, this is a **re-run**: read it and `CLAUDE.local.md` first, ask which parts they want to change, and only redo those rounds. Never delete their data folders.
 
 ## Round 1: Identity
-1. **What should your brain be called?** Offer 3 suggestions plus Other, e.g. "<First name>'s Brain", "Atlas", "Second Brain". This name replaces every generic title: the heading of `CLAUDE.local.md`, `NOW.md`, the README they see.
+1. **What should your brain be called?** Offer 3 suggestions plus Other, e.g. "<First name>'s Brain", "Atlas", "Second Brain". This name replaces every generic title: the heading of `CLAUDE.local.md` and `NOW.md` (never edit the tracked README).
 2. Their name, and what you should call them.
 3. Pronouns (they/them by default if skipped).
 4. Where they live, and their timezone (IANA name, e.g. `Asia/Singapore`, `America/Toronto`). Ask if they need a **second clock** (family abroad, moving soon, a partner overseas); if so get its label and IANA zone.
@@ -43,7 +43,7 @@ AskUserQuestion allows only 4 options per question, so split this into 3 multiSe
 1. Length: very concise (lead with the answer, bullets, no filler) / balanced / detailed explanations.
 2. Tone: casual (swearing fine) / casual (clean) / professional.
 3. Spelling: British or Canadian / American.
-4. Maths: LaTeX (their editor renders it) / plain Unicode (terminal). Ask only if `school`, `research` or `work` is technical.
+4. Maths: LaTeX (their editor renders it) / plain Unicode (terminal). Ask whenever `school` or `research` is chosen, or their work involves maths.
 5. Anything that annoys them in AI answers (free text, optional). Turn each answer into an explicit rule.
 
 ## Round 5: Their writing voice (optional)
@@ -64,8 +64,8 @@ Ask exactly: **"Does anyone else use this same Claude account (for example a sib
     }
   }
   ```
-  Merge with the file if it already exists. Tell them: their dates live in `00-dashboard/deadlines.md`, `/sweep` is off, and `/weekly-review` runs from files only. Add a hard rule at the top of `CLAUDE.local.md`: "This account is shared. Never use Gmail, Google Calendar, Google Drive or Google Sheets tools; they belong to someone else."
-- **No, it's mine:** ask which connectors they actually use (multiSelect: Gmail, Google Calendar, Google Drive, none). Set `"google_connectors": true` and list them in `"connectors"`. If Gmail is on, ask which senders matter most to them (school system, manager, recruiters) and write them into `00-dashboard/inbox-sweep.md` as their sweep focus.
+  Merge with the file if it already exists. Tell them: their dates live in `00-dashboard/deadlines.md`, `/sweep` is off, and `/weekly-review` runs from files only. Fill `{{SHARED_ACCOUNT_RULE}}` in `CLAUDE.local.md` with exactly: "🔴 This Claude account is shared. Never use Gmail, Google Calendar, Google Drive or Google Sheets tools; they belong to someone else. Dates live in 00-dashboard/deadlines.md."
+- **No, it's mine:** ask which connectors they actually use (multiSelect: Gmail, Google Calendar, Google Drive, none). Set `"google_connectors": true` and list them in `"connectors"` using exactly these strings: `"Gmail"`, `"Google Calendar"`, `"Google Drive"`. If Gmail is on, ask which senders matter most to them (school system, manager, recruiters) and write them into `00-dashboard/inbox-sweep.md` as their sweep focus.
 
 ## Round 7: Reminders (multiSelect)
 - Live clock line on every message (recommended).
@@ -76,7 +76,7 @@ Ask exactly: **"Does anyone else use this same Claude account (for example a sib
 Show a one-screen summary: brain name, modules, answer style, shared-account status, reminders. Ask "Build it?" with options Build / Change something.
 
 ## Generate
-Do all of this in one pass, then verify.
+Do all of this in one pass, then verify. "Today" means today in their timezone: `TZ=<their timezone> date +%F`.
 
 1. **`brain.config.json`** at the root:
    ```json
@@ -93,12 +93,13 @@ Do all of this in one pass, then verify.
      "installed": "YYYY-MM-DD"
    }
    ```
-   `second_timezone` is `{"label": "...", "tz": "Area/City"}` or `null`. `weekly_review_day`: Monday 0 to Sunday 6.
-2. **`CLAUDE.local.md`** from `kit/templates/CLAUDE.local.template.md`: fill every `{{...}}`, delete template comments, add one index row per file you create (module files give their rows). The answer-style rules and voice rule go in verbatim. No placeholder may survive.
-3. **Always create:** `00-dashboard/NOW.md`, `00-dashboard/deadlines.md`, `01-profile/profile.md` from `kit/templates/`, filled with what they told you. Every dated event from the interview goes into `deadlines.md`; anything in the next 7 days also into NOW.md URGENT. Create `01-profile/birthdays.md` if `people` is on, and `00-dashboard/inbox-sweep.md` if Gmail is on.
-4. **Each module:** create the folder and the files listed in its `kit/modules/<name>.md`, pre-filled with their answers. Leave a `> To fill:` line for anything they skipped. Do not create folders for modules they did not choose.
+   `timezone_label` is the city name shown in the clock line (e.g. "Singapore"). `second_timezone` is `{"label": "<city>", "tz": "Area/City"}` or `null`. `weekly_review_day`: Monday 0 to Sunday 6.
+2. **`CLAUDE.local.md`** from `kit/templates/CLAUDE.local.template.md`: fill every `{{...}}`, delete template comments, add one index row per file you create (module files give their rows). `{{ONE_LINE_WHO}}` is one clause like "a JC2 student aiming for medicine" or "a junior backend engineer at a fintech startup"; `{{LONG_TERM_GOAL}}` holds the long-term goal (the 12-month goals live in `profile.md`). The answer-style rules and voice rule go in verbatim. Each chosen module's "Rules to add to CLAUDE.local.md" and fixed life rules from any round (for example "no debt", "no gym") go under Personal rules. No placeholder may survive.
+3. **Always create:** `00-dashboard/NOW.md`, `00-dashboard/deadlines.md`, `01-profile/profile.md` from `kit/templates/`, filled with what they told you. Every dated event from the interview goes into `deadlines.md` (one `## YYYY` section per year); external deadlines you cannot verify with a web search right now go in marked ⚠️ unverified, to check on first use; anything in the next 7 days also into NOW.md URGENT. Create `01-profile/birthdays.md` if `people` is on, and `00-dashboard/inbox-sweep.md` if Gmail is on.
+4. **Each module:** create the folder and the files listed in its `kit/modules/<name>.md`, pre-filled with their answers. For anything they skipped, write a plain line `To fill: <what is missing>` under the relevant heading. Keep the `<!-- -->` format comments in data files (NOW.md, deadlines.md); delete only those in `CLAUDE.local.md`. Create a module file marked "(if ...)" only when that condition holds. Do not create folders for modules they did not choose.
 5. **`.claude/settings.local.json`** only if the account is shared (Round 6).
-6. **Verify:** `grep -rn "{{" CLAUDE.local.md 0*/ 1*/` must print nothing. Run `CLAUDE_PROJECT_DIR="$PWD" python3 kit/hooks/prompt.py < /dev/null` and check it prints the time line (and nothing about setup). If python3 is missing, tell them hooks need it (`xcode-select --install` on a Mac) and continue.
+5b. Run `mkdir -p .brain-state && TZ=<their timezone> date +%F > .brain-state/weekly-review-last` so the weekly reminder does not fire on install day.
+6. **Verify:** `grep -rnE "\{\{|<Project name>" CLAUDE.local.md [0-9][0-9]-*/ 2>/dev/null` must print nothing (no output means pass). Run `CLAUDE_PROJECT_DIR="$PWD" python3 kit/hooks/prompt.py < /dev/null` and check it prints the time line (and nothing about setup). It creates `.brain-state/`; that is expected and gitignored. If python3 is missing, tell them hooks need it (`xcode-select --install` on a Mac) and continue.
 7. **Finish** with: the brain's name, the folders created, and these next steps:
    - "Start a fresh Claude chat in this folder (or reload VS Code) so the new rules and reminders load."
    - "Just talk to it. Tell it about your week, paste a syllabus, forward a deadline; it files things itself."

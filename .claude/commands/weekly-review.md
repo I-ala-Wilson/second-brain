@@ -9,4 +9,4 @@ Run the owner's weekly review. One screen max, in the answer style from `CLAUDE.
 3. **Open threads**: one line each with the next action and who it is waiting on, from NOW.md "Next up" and "Waiting on others" and any project file with a live status.
 4. **Last week**: what got done, from NOW.md "Done recently" entries in the past 7 days.
 5. **Top 3 this week**: the three highest-leverage actions, each with a deadline. Ask if they want them written into NOW.md.
-6. Run `mkdir -p .brain-state && date +%F > .brain-state/weekly-review-last` so the weekly reminder stops.
+6. Run `mkdir -p .brain-state && TZ=<timezone from brain.config.json> date +%F > .brain-state/weekly-review-last` so the weekly reminder stops.

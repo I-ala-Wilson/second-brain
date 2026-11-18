@@ -1,6 +1,7 @@
 # Deadline calendar
 > Everything dated, in chronological order, times in {{TIMEZONE}}. Last updated: **{{DATE}}**
 
+<!-- One ## YYYY section per year, each with its own table. -->
 ## {{YEAR}}
 | Date | What | Status |
 |---|---|---|

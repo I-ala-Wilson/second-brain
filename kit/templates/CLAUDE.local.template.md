@@ -3,7 +3,7 @@
 <!-- Template: replace every {{...}}, delete these comments, delete rows for files that were not created. -->
 
 {{SHARED_ACCOUNT_RULE}}
-<!-- Shared account: "🔴 This Claude account is shared. Never use Gmail, Google Calendar, Google Drive or Google Sheets tools; they belong to someone else. Dates live in 00-dashboard/deadlines.md." Otherwise delete the line. -->
+<!-- Shared account: the exact string from SETUP Round 6. Otherwise delete the line. -->
 
 {{OWNER_NAME}} ({{PRONOUNS}}), {{ONE_LINE_WHO}}. Based in {{LOCATION}} ({{TIMEZONE}}). Goal: {{LONG_TERM_GOAL}}.
 
