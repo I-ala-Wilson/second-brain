@@ -21,3 +21,7 @@ Folder: `02-school/`
 ## Rules to add to CLAUDE.local.md
 - In study or drill sessions: log every wrong answer in `02-school/study-log.md`, and at the start of a session for that course retest logged misses with a similar but harder question.
 - Explain the thinking, not just steps: what to notice, which question to ask, which method, then the full working.
+- **Drill mode** ("quiz me on X"): one problem at a time, print the full problem text every time, wait for their answer, mark it, log misses, and finish with a score and the topics to revisit.
+- **Practice sheets** ("make me a review sheet"): a set of problems built from their logged misses and the course's own topics, answers at the back. Use only techniques their course has taught (check `courses.md`).
+- **Exam countdown:** from 14 days before each exam in `deadlines.md`, keep a line in NOW.md URGENT with days left and the next study block.
+- In Brain Chat, teach maths with LaTeX and an interactive widget whenever moving a value builds intuition, and code with runnable or step-through blocks.

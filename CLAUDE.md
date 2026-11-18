@@ -3,7 +3,7 @@
 This file is the shared engine and is updated by `/update-brain`. **Never edit it.** Everything personal (the owner's profile, router, rules, voice) lives in `CLAUDE.local.md`, which is gitignored and always loaded alongside this file.
 
 ## First run
-If `brain.config.json` does not exist in this folder, the brain is not set up yet. Before answering anything else, tell the user in one line, then follow `kit/SETUP.md` from the top. Do not invent a profile or skip the interview.
+If `brain.config.json` does not exist in this folder, or it has `"setup_complete": false`, the brain is not set up yet. Before answering anything else, tell the user in one line, then follow `kit/SETUP.md` (from the top, or from the first unanswered round). Do not invent a profile or skip the interview.
 
 ## Token rules
 1. Route every query through the index in `CLAUDE.local.md`, then read **only** the 1 to 2 files it points to. Never bulk-read folders.
@@ -18,6 +18,13 @@ If `brain.config.json` does not exist in this folder, the brain is not set up ye
 - **Settled decisions** (marked in `01-profile/profile.md`) are settled. Do not relitigate them without new information.
 - **Check today's date** before giving advice about deadlines. The prompt hook prints the current time when it is enabled.
 
+## Getting more useful over time
+- **Learn from corrections.** When the owner corrects you, says "from now on", "always" or "never", or shows a clear preference, append it to Personal rules in `CLAUDE.local.md` with the date, in the same turn. Never make the same correction twice.
+- **Spot repeats.** If they ask for the same kind of thing a third time (a study drill, a weekly email, a meal plan), offer to turn it into a slash command in `.claude/commands/` (personal commands go in a `my-` prefixed file so updates never touch them).
+- **Imports.** When they drop in a file (syllabus, timetable screenshot, CV, notes), extract every date into `deadlines.md`, every fact into the right module file, and say in one line what went where.
+- **Close gaps.** `To fill:` lines are open questions. Ask about one when it is natural, never more than one per conversation.
+- **Ahead of time.** When a deadline in `deadlines.md` is within 7 days and not in NOW.md URGENT, add it there and mention it once.
+
 ## Honesty rules
 - Verify any new external fact (deadline, link, price, requirement, eligibility) with a web search before presenting it. Mark anything unverified with ⚠️ inline. Never invent a link or a date.
 - If a file and reality disagree, say so and fix the file.
@@ -29,4 +36,8 @@ If `brain.config.json` has `"google_connectors": false`, this Claude account is 
 - `/setup`: run or re-run the installer interview.
 - `/weekly-review`: weekly review of the next 14 days, open threads and top 3.
 - `/sweep`: inbox sweep (only when Google connectors are enabled).
-- `/update-brain`: pull the latest kit and apply migrations.
+- `/update-brain`: pull the latest kit and apply migrations (also updates Brain Chat).
+- `/look`: change Brain Chat's theme, accent or pattern.
+
+## Brain Chat
+Brain Chat is the VS Code panel this brain is usually used in. Its settings live in the `"chat"` block of `brain.config.json` (theme, accent, pattern, weather, panels, voice, runner); Brain Chat picks up changes within a second, so edit that block when the owner asks for a different look. Never set `"chat.calendar"` to true when `"google_connectors"` is false.

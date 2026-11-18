@@ -31,6 +31,10 @@ except Exception as e:
     print(f"brain.config.json is unreadable ({e}). Tell the user and offer to fix it.")
     sys.exit(0)
 
+if cfg.get("setup_complete") is False:
+    print("SETUP IN PROGRESS: brain.config.json says setup_complete is false. Continue the interview in "
+          "kit/SETUP.md from the first unanswered round before anything else.")
+
 hooks = cfg.get("hooks", {})
 owner = cfg.get("owner_name", "the owner")
 tz = ZoneInfo(cfg.get("timezone", "UTC"))
@@ -82,6 +86,20 @@ if hooks.get("birthdays"):
         print("BIRTHDAY REMINDER: " + " ".join(parts) +
               f" At the top of your reply, prompt {owner} to wish them happy birthday "
               "(or to plan to tomorrow), then answer the message.")
+
+installed = cfg.get("installed")
+try:
+    day_n = (today - dt.date.fromisoformat(installed)).days + 1 if installed else 99
+except ValueError:
+    day_n = 99
+if 1 <= day_n <= 14 and cfg.get("setup_complete") is not False:
+    STATE.mkdir(exist_ok=True)
+    stamp = STATE / f"onboarding-{today}"
+    if not stamp.exists():
+        stamp.touch()
+        print(f"ONBOARDING (day {day_n} of 14): after answering the message, ask {owner} ONE short question that "
+              "makes the brain more useful: fill a 'To fill:' line, a skipped setup round, an empty module, or "
+              "ask for a file to import (syllabus, timetable, CV). Write the answer into the right file.")
 
 if hooks.get("weekly_review"):
     day = int(cfg.get("weekly_review_day", 6))  # Monday=0 ... Sunday=6

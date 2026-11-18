@@ -2,11 +2,16 @@
 
 You are installing a second brain for a new owner. Your job: ask what you need, then generate a brain tuned exactly to them. Read this whole file before asking the first question.
 
+## Step 0: Brain Chat
+Brain Chat is the VS Code panel that makes this brain pleasant to use (maths, diagrams, themes, a home screen with their clock and next 7 days). If you are not already running inside it (your system prompt mentions "Brain Chat rich interface" when you are), first run the installer: `bash kit/install.sh` on macOS, `powershell -ExecutionPolicy Bypass -File kit\install.ps1` on Windows. Show its output, then tell them: "Reload VS Code (Cmd/Ctrl+Shift+P, Reload Window). Brain Chat will open and continue the setup." Stop there. If the installer could not install Brain Chat, carry on with the interview here instead.
+
 ## How to run the interview
 - Use the **AskUserQuestion** tool for every choice (up to 4 questions per call, 2 to 4 options each; "Other" is added automatically for free text). For open answers (names, goals, course lists, writing samples), ask in plain chat and wait.
 - Go round by round. Keep each message short and friendly. Never ask something you can already infer from an earlier answer.
-- Say up front: "About 10 minutes, 8 short rounds. You can say 'skip' to anything."
-- If `brain.config.json` already exists, this is a **re-run**: read it and `CLAUDE.local.md` first, ask which parts they want to change, and only redo those rounds. Never delete their data folders.
+- Say up front: "About 10 to 15 minutes, 11 short rounds. You can say 'skip' to anything."
+- **Live preview:** as soon as Round 1 is answered, write a provisional `brain.config.json` with `"setup_complete": false`, their `brain_name`, `owner_name`, `timezone` and a `"chat"` block. Brain Chat reloads it within a second, so their name, clock and later their theme appear while you talk. Keep updating it after each round.
+- If `brain.config.json` exists with `"setup_complete": false`, a previous setup was interrupted: say so, read what is there, and continue from the first unanswered round.
+- If `brain.config.json` already exists with `"setup_complete": true`, this is a **re-run**: read it and `CLAUDE.local.md` first, ask which parts they want to change, and only redo those rounds. Never delete their data folders.
 
 ## Round 1: Identity
 1. **What should your brain be called?** Offer 3 suggestions plus Other, e.g. "<First name>'s Brain", "Atlas", "Second Brain". This name replaces every generic title: the heading of `CLAUDE.local.md` and `NOW.md` (never edit the tracked README).
@@ -72,7 +77,23 @@ Ask exactly: **"Does anyone else use this same Claude account (for example a sib
 - Birthday reminders the day before and the day of (only offer if `people` is on; ask them to list birthdays as `MM-DD Name`, or say they will add them later).
 - Weekly review nudge. Ask which day (default Sunday).
 
-## Round 8: Confirm
+## Round 8: Look (Brain Chat)
+Change `chat.theme` in `brain.config.json` right after each answer so they see it immediately, then ask "Keep it?".
+1. Theme: `hypercard` (black and white pixel retro, the original), `clean` (white, modern, soft), `midnight` (dark glass with gradients), `paper` (warm off-white, serif), `terminal` (black and green).
+2. Accent colour (hypercard, clean and midnight only): black `#000000`, cobalt `#2b59ff`, forest `#1f7a4d`, plum `#7a2b8f`, or a hex code. HyperCard recolours its title bars and shadows with it; use `""` for none.
+3. Home-screen pattern: `chladni` (radial petals), `rings`, `petals`, `lattice`.
+
+## Round 9: Extras (multiSelect, then follow-ups)
+- **Weather on the home screen:** ask their city, look it up with `curl -s "https://geocoding-api.open-meteo.com/v1/search?name=<city>&count=1"` and store `{"city", "lat", "lon"}` in `chat.weather`. Free, no account.
+- **Next 7 days panel** (on by default): a short list built from `NOW.md` and `deadlines.md` on every new chat.
+- **Code runner** (on by default if `school`, `research` or `projects` is chosen, or they code): Python, Java, C and bash blocks run in the chat with a step-through player for Python. Check what is installed (`python3 --version`, `java -version`, `clang --version`; Windows: `python`, `java`, `gcc`/`clang`) and offer to install what is missing: macOS `xcode-select --install` (Python + C), `brew install openjdk@21` if Homebrew exists; Windows `winget install Python.Python.3.12`, `winget install EclipseAdoptium.Temurin.21.JDK`, `winget install LLVM.LLVM`. Ask before installing anything.
+- **Voice typing** (local Whisper, nothing leaves the computer): Apple Silicon Macs (`uname -m` is `arm64`) use `bash kit/voice-setup.sh` (about 1.5 GB download); Windows uses `powershell -ExecutionPolicy Bypass -File kit\voice-setup.ps1` (about 500 MB). Intel Macs: say it is not supported. Ask before running; it takes a few minutes, so run it in the background and continue the interview. Set `chat.voice` to true only after it prints "Voice typing ready". Put their course codes, names and jargon into `chat.voiceVocab` (one sentence) so Whisper spells them right.
+- The calendar panel is not offered yet; keep `chat.calendar` false.
+
+## Round 10: Import
+Say: "Drop in anything you already have and I'll file it: syllabi or course outlines, a timetable screenshot, your CV, a photo of your planner, notes, a list of deadlines." In Brain Chat they can click Attach, drag files in, or paste. Read each one, put every date into `deadlines.md`, every fact into the right module file, and list in one line per file what went where. They can say "nothing for now".
+
+## Round 11: Confirm
 Show a one-screen summary: brain name, modules, answer style, shared-account status, reminders. Ask "Build it?" with options Build / Change something.
 
 ## Generate
@@ -81,6 +102,7 @@ Do all of this in one pass, then verify. "Today" means today in their timezone: 
 1. **`brain.config.json`** at the root:
    ```json
    {
+     "setup_complete": true,
      "brain_name": "", "owner_name": "", "pronouns": "",
      "timezone": "Area/City", "timezone_label": "",
      "second_timezone": null,
@@ -90,7 +112,12 @@ Do all of this in one pass, then verify. "Today" means today in their timezone: 
      "weekly_review_day": 6,
      "birthdays_file": "01-profile/birthdays.md",
      "kit_version": "<top version in kit/CHANGELOG.md>",
-     "installed": "YYYY-MM-DD"
+     "installed": "YYYY-MM-DD",
+     "chat": {
+       "theme": "hypercard", "accent": "", "pattern": "chladni", "icon": "brain",
+       "weather": null, "today": true, "calendar": false,
+       "voice": false, "runner": true, "promptFile": null, "voiceVocab": ""
+     }
    }
    ```
    `timezone_label` is the city name shown in the clock line (e.g. "Singapore"). `second_timezone` is `{"label": "<city>", "tz": "Area/City"}` or `null`. `weekly_review_day`: Monday 0 to Sunday 6.
@@ -101,8 +128,9 @@ Do all of this in one pass, then verify. "Today" means today in their timezone: 
 5b. Run `mkdir -p .brain-state && TZ=<their timezone> date +%F > .brain-state/weekly-review-last` so the weekly reminder does not fire on install day.
 6. **Verify:** `grep -rnE "\{\{|<Project name>" CLAUDE.local.md [0-9][0-9]-*/ 2>/dev/null` must print nothing (no output means pass). Run `CLAUDE_PROJECT_DIR="$PWD" python3 kit/hooks/prompt.py < /dev/null` and check it prints the time line (and nothing about setup). It creates `.brain-state/`; that is expected and gitignored. If python3 is missing, tell them hooks need it (`xcode-select --install` on a Mac) and continue.
 7. **Finish** with: the brain's name, the folders created, and these next steps:
-   - "Start a fresh Claude chat in this folder (or reload VS Code) so the new rules and reminders load."
+   - "Start a fresh chat (the + in Brain Chat's tab bar, or Ctrl+Cmd+N / Ctrl+Alt+N) so your new rules and reminders load. New chats open on your home screen."
    - "Just talk to it. Tell it about your week, paste a syllabus, forward a deadline; it files things itself."
-   - "Run `/update-brain` now and then to get improvements."
+   - "Run `/update-brain` now and then to get improvements. `/look` changes the theme any time."
+   - "For the next two weeks I'll ask you one quick question a day to fill gaps. Answer or ignore it."
 
 Never put secrets (passwords, ID numbers, bank details) into files unless they insist; suggest storing only the last 4 digits.

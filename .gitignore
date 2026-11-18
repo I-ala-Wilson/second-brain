@@ -8,3 +8,4 @@ brain.config.json
 .DS_Store
 .env
 .env.*
+.claude/commands/my-*.md
