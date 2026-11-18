@@ -1,6 +1,10 @@
 # Kit changelog
 Newest first. Each version lists what changed and the **Migration** steps `/update-brain` applies to existing brains.
 
+## 1.1.2 (2026-11-18) · Brain Chat 0.2.2
+- The permission-mode picker is now a themed menu with a short description of each mode.
+- **Migration:** none. Run the Brain Chat step in /update-brain.
+
 ## 1.1.1 (2026-11-18) · Brain Chat 0.2.1
 - Brain Chat tabs use the pixel mushroom icon.
 - **Migration:** remove `chat.icon` from `brain.config.json` if present. Run the Brain Chat step in /update-brain.
